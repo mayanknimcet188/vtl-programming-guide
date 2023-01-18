@@ -2,8 +2,14 @@
     The value of 'payload' after the template has been evaluated
     will be passed as the event to AWS Lambda.
 *#
+#set( $myMap = {
+    "id": $context.arguments.id,
+    "meta": "stuff",
+    "upperMeta": $context.arguments.meta.toUpperCase()
+})
+
 {
     "version" : "2017-02-28",
     "operation": "Invoke",
-    "payload": $util.toJson($context.arguments)
+    "payload": $util.toJson($myMap)
 }

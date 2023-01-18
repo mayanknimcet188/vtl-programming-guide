@@ -1,1 +1,17 @@
-$util.toJson($context.result)
+#set($data = {
+"id" : "456"
+})
+#foreach($item in $context.result.entrySet())   ##$context.result is a MAP so we use entrySet()
+    #if($item.key == "ifCheck")
+        $util.qr($data.put("meta", "$item.value"))
+    #end
+#end
+
+##Uncomment this out if you want to test and remove the below #if check
+##$util.toJson($data)
+
+#if($context.result["id"] == 123)
+    $util.toJson($context.result)
+  #else
+    $util.unauthorized()
+#end

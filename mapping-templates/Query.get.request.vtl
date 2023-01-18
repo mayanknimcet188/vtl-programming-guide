@@ -1,19 +1,130 @@
-#**
-    The value of 'payload' after the template has been evaluated
-    will be passed as the event to AWS Lambda.
-*#
 #set( $myMap = {
-    "id": $context.arguments.id,
-    "meta": "stuff",
-    "upperMeta": $context.arguments.meta.toUpperCase()
-})
+  "id": $context.arguments.id,
+  "meta": "stuff",
+  "upperMeta" : "$context.arguments.meta.toUpperCase()"
+} )
 
+##This is how you would do it in two steps with a "quiet reference" and you can use it for invoking methods, such as .put() to add items to a Map
+#set ($myMap2 = {})
+$util.qr($myMap2.put("id", "first value"))
+
+## Properties are created with a dot notation
 #set($myMap.myProperty = "ABC")
 #set($myMap.arrProperty = ["Write", "Some", "GraphQL"])
 #set($myMap.jsonProperty = {
-    "AppSync": "Offline and Realtime",
-    "Cognito": "AuthN and AuthZ"
+    "AppSync" : "Offline and Realtime",
+    "Cognito" : "AuthN and AuthZ"
 })
+
+##When you are inside a string and just have ${} without ! it means stuff inside curly braces are a reference
+#set($firstname = "Jeff")
+$util.qr($myMap.put("Firstname", "${firstname}"))
+
+#set($bigstring = "This is a long string, I want to pull out everything after the comma")
+#set ($comma = $bigstring.indexOf(','))
+#set ($comma = $comma +2)
+#set ($substring = $bigstring.substring($comma))
+$util.qr($myMap.put("substring", "${substring}"))
+
+##Classic for-each loop over N items:
+#set($start = 0)
+#set($end = 5)
+#set($range = [$start..$end])
+#foreach($i in $range)          ##Can also use range operator directly like #foreach($item in [1...5])
+   ##$util.qr($myMap.put($i, "abc"))
+   ##$util.qr($myMap.put($i, $i.toString()+"foo")) ##Concat variable with string
+   $util.qr($myMap.put($i, "${i}foo"))     ##Reference a variable in a string with "${varname)"
+#end
+
+##Operators don't work
+#set($x = 5)
+#set($y = 7)
+#set($z = $x + $y)
+#set($x-y = $x - $y)
+#set($xy = $x * $y)
+#set($xDIVy = $x / $y)
+#set($xMODy = $x % $y)
+$util.qr($myMap.put("z", $z))
+$util.qr($myMap.put("x-y", $x-y))
+$util.qr($myMap.put("x*y", $xy))
+$util.qr($myMap.put("x/y", $xDIVy))
+$util.qr($myMap.put("x|y", $xMODy))
+
+##arrays
+#set($array = ["first"])
+#set($idx = 0)
+$util.qr($myMap.put("array", $array[$idx]))
+##initialize array vals on create
+#set($arr2 = [42, "a string", 21, "test"])
+$util.qr($myMap.put("arr2", $arr2[$idx]))
+$util.qr($myMap.put("isEmpty", $array.isEmpty()))  ##Returns false
+$util.qr($myMap.put("size", $array.size()))
+##Get and set items in an array
+$util.qr($myMap.put("set", $array.set(0, 'changing array value')))
+$util.qr($myMap.put("get", $array.get(0)))
+
+##Lookup by name from a Map/dictionary in a similar way:
+#set($result = {
+    "Author" : "Nadia",
+    "Topic" : "GraphQL"
+})
+$util.qr($myMap.put("Author", $result["Author"]))
+
+
+##Conditional examples
+#if(!$array.isEmpty())
+$util.qr($myMap.put("ifCheck", "Array not empty"))
+#else
+$util.qr($myMap.put("ifCheck", "Your array is empty"))
+#end
+
+#if ($arr2.size() == 0)
+$util.qr($myMap.put("elseIfCheck", "You forgot to put anything into this array!"))
+#elseif ($arr2.size() == 1)
+$util.qr($myMap.put("elseIfCheck", "Good start but please add more stuff"))
+#else
+$util.qr($myMap.put("elseIfCheck", "Good job!"))
+#end
+
+##Above showed negation(!) and equality (==), we can also use OR, AND, >, <, >=, <=, and !=
+#set($T = true)
+#set($F = false)
+#if ($T || $F)
+  $util.qr($myMap.put("OR", "TRUE"))
+#end
+
+#if ($T && $F)
+  $util.qr($myMap.put("AND", "TRUE"))
+#end
+
+##Using the foreach loop counter - $foreach.count
+#foreach ($item in $arr2)
+  #set($idx = "item" + $foreach.count)
+  $util.qr($myMap.put($idx, $item))
+#end
+
+##Using a Map and plucking out keys/vals
+#set($hashmap = {
+    "DynamoDB" : "https://aws.amazon.com/dynamodb/",
+    "Amplify" : "https://github.com/aws/aws-amplify",
+    "DynamoDB2" : "https://aws.amazon.com/dynamodb/",
+    "Amplify2" : "https://github.com/aws/aws-amplify"
+})
+
+#foreach ($key in $hashmap.keySet())
+    #if($foreach.count > 2)
+        #break
+    #end
+    $util.qr($myMap.put($key, $hashmap.get($key)))
+#end
+
+##concatenate strings
+#set($s1 = "Hello")
+#set($s2 = " World")
+$util.qr($myMap.put("concat","$s1$s2"))
+$util.qr($myMap.put("concat2","Second $s1 World"))
+
+$util.qr($myMap.put("context", $context))
 
 {
     "version" : "2017-02-28",

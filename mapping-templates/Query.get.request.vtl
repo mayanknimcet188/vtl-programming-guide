@@ -8,6 +8,13 @@
     "upperMeta": $context.arguments.meta.toUpperCase()
 })
 
+#set($myMap.myProperty = "ABC")
+#set($myMap.arrProperty = ["Write", "Some", "GraphQL"])
+#set($myMap.jsonProperty = {
+    "AppSync": "Offline and Realtime",
+    "Cognito": "AuthN and AuthZ"
+})
+
 {
     "version" : "2017-02-28",
     "operation": "Invoke",

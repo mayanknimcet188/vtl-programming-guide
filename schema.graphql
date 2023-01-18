@@ -1,0 +1,13 @@
+type Query {
+    get(id: ID, meta: String): Thing
+}
+
+type Thing {
+    id: ID!
+    title: String!
+    meta: String
+}
+
+schema {
+    query: Query
+}

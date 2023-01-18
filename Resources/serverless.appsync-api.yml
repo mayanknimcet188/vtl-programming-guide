@@ -1,0 +1,20 @@
+name: vtl-guide-${self:provider.stage}
+schema: schema.graphql
+authenticationType: API_KEY
+mappingTemplatesLocation: mapping-templates
+mappingTemplates:
+  - type: Query
+    field: get
+    dataSource: mapOverValues
+    request: Query.get.request.vtl
+    response: Query.get.response.vtl
+dataSources:
+  - type: NONE
+    name: none
+  - type: AWS_LAMBDA
+    name: mapOverValues
+    description: 'Lambda To Map Over Values coming from request'
+    config:
+      functionName: mapOverValues
+      lambdaFunctionArn: { Fn::GetAtt: [MapOverValuesLambdaFunction, Arn]}
+

@@ -1,0 +1,24 @@
+{
+  "name": "vtl-programming-guide",
+  "version": "1.0.0",
+  "description": "VTL is a logical template language, giving us power to manipulate both the request and the response in the  standard request/response flow of a web application using techniques such as: - Default values for new items - Input validation and formatting - Transforming and shaping data - Iterating over lists, maps, and arrays to pluck out or alter values - Filter/change responses based on user identity - Complex authorization checks",
+  "main": "index.js",
+  "scripts": {
+    "sls": "sls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mayanknimcet188/vtl-programming-guide.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mayanknimcet188/vtl-programming-guide/issues"
+  },
+  "homepage": "https://github.com/mayanknimcet188/vtl-programming-guide#readme",
+  "devDependencies": {
+    "serverless": "^3.26.0",
+    "serverless-appsync-plugin": "^1.14.0"
+  }
+}
